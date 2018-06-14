@@ -1,0 +1,80 @@
+---
+title: "HW5"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+###import 2016 children's names file and turn it into a data frame
+```{r}
+kidnames <- read.table(file.choose(), sep = ";", header=FALSE)
+names(kidnames) <- c("Name", "Gender", "Number")
+head (kidnames)
+```
+
+###summary and str for the kidname df
+```{r}
+summary(kidnames)
+str(kidnames)
+```
+
+###find a name with 3 y's at the end
+```{r}
+grep('yyy', kidnames$First_Name)
+```
+
+###remove that name
+```{r}
+y2016 <- kidnames[-212,]
+y2016[210:220,]
+```
+
+###import yob2015
+```{r}
+y2015 <- read.table(file.choose(), sep = ",", header=FALSE)
+names(y2015) <- c("Name", "Gender", "Number")
+head (kidnames)
+```
+
+###display last 10 rows
+```{r}
+tail(y2015, 10)
+```
+####the last 10 rows have all the same count
+
+###merge two data sets and sort
+```{r}
+final <- merge(kidnames, y2015, by = "Name")
+head(final)
+```
+
+###check for N/As
+```{r}
+any(is.na(final))
+```
+
+###compute Total in new column that adds two datasets
+```{r}
+final$total <- with(final, Number.x + Number.y)
+head(final, 10)
+sum(final$total)
+```
+
+###sort and determine top names
+```{r}
+sorttotal <- final[with(final, order(-total)),]
+head(sorttotal, 10)
+```
+
+###girl top 10 names
+```{r}
+topgirls <- sorttotal[sorttotal$Gender.x == 'F',]
+head(topgirls, 10)
+```
+
+###write girls names to a csv file
+```{r}
+write.csv (topgirls$Name[1:10], "Top10GirlsNames.csv")
+```
